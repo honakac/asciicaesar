@@ -24,7 +24,8 @@ static void usage(char *prog) {
     std::cerr << "Usage: " << prog << " [OPTIONS]" << std::endl;
     std::cerr << "  -i FILE                    input file(default read from stdin)" << std::endl;
     std::cerr << "  -o FILE                    output file(default write to stdout)" << std::endl;
-    std::cerr << "  -s COUNT                   character offset(default: 2)\n" << std::endl;
+    std::cerr << "  -s COUNT                   character offset(default: 2)" << std::endl;
+    std::cerr << "  -g CHARS                   ignore shifting characters from the list\n" << std::endl;
     std::cerr << "  -v                         show version" << std::endl;
     std::cerr << "  -h                         show this message" << std::endl;
     std::exit(1);
@@ -35,14 +36,16 @@ int main(int argc, char **argv) {
         FILE *input     = stdin;
         FILE *output    = stdout;
         int shift       = 2;
+        std::string ignoreChars{};
     } flags;
 
     int opt;
-    while ((opt = getopt(argc, argv, "i:o:s:vh")) != -1) {
+    while ((opt = getopt(argc, argv, "i:o:s:g:vh")) != -1) {
         switch (opt) {
             case 'i':   flags.input = fopen(optarg, "r");  break;
             case 'o':   flags.output = fopen(optarg, "w");  break;
             case 's':   flags.shift = std::atoi(optarg);              break;
+            case 'g':   flags.ignoreChars = std::string(optarg);         break;
             case 'v':
                 std::cerr << "asciicaesar " ASCIICAESAR_VERSION << std::endl;
                 std::exit (-1);
@@ -59,7 +62,7 @@ int main(int argc, char **argv) {
 
     for (size_t pos = 0; pos < size; ++pos) {
         int ch = fgetc(flags.input);
-        if (ch != '\n')
+        if (ch != '\n' && (flags.ignoreChars.find(ch) == std::string::npos))
             ch += flags.shift;
 
         fputc(ch, flags.output);

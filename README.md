@@ -27,11 +27,11 @@ For detailed information on available options, use './asciicaesar -h'
 Encrypt text while ignoring spaces and punctuation:
 
 ```bash
-./asciicaesar -e -s 3 -i ' ,.!?'
+./asciicaesar -s 3 -i ' ,.!?'
 ```
 or using pipes
 ```bash
-cat input_file | ./asciicaesar -e -s 3 -i ' ,.!?' > output_file
+cat input_file | ./asciicaesar -s 3 -i ' ,.!?' > output_file
 ```
 
 ## Contributing:
